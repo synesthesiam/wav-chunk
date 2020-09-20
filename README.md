@@ -2,6 +2,12 @@
 
 Read or write INFO chunks from a [RIFF WAV](https://en.wikipedia.org/wiki/WAV) file.
 
+## Installation
+
+```sh
+$ pip install wavchunk
+```
+
 ## Dependencies
 
 * Python 3.6 or higher
