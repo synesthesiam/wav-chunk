@@ -29,6 +29,7 @@ with open(version_path, "r") as version_file:
 setuptools.setup(
     name="wavchunk",
     version=version,
+    description="Read or write INFO chunks in WAV files",
     author="Michael Hansen",
     author_email="mike@rhasspy.org",
     url="https://github.com/synesthesiam/wav-chunk",
