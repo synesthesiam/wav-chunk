@@ -47,11 +47,10 @@ def write_size(file: typing.IO[bytes], size: int):
 
 
 def read_after_format(
-    file: typing.IO[bytes], out_file: typing.Optional[typing.IO[bytes]] = None
+    file: typing.IO[bytes], out_file: typing.Optional[typing.IO[bytes]] = None, extra_size: int = 0
 ):
     """
     Read until file is right after data chunk.
-
     Optionally copy data to output file.
     """
     # Copy RIFF header
@@ -61,7 +60,8 @@ def read_after_format(
 
     if out_file:
         write_name(out_file, riff)
-        write_size(out_file, riff_size)
+        new_riff_size = riff_size + extra_size
+        write_size(out_file, new_riff_size)
 
     # Copy WAVE header
     wave = read_name(file)
@@ -85,15 +85,14 @@ def read_after_format(
 
 
 def read_after_data(
-    file: typing.IO[bytes], out_file: typing.Optional[typing.IO[bytes]] = None
+    file: typing.IO[bytes], out_file: typing.Optional[typing.IO[bytes]] = None, extra_size: int = 0
 ):
     """
     Read until file is right after data chunk.
-
     Optionally copy data to an output file.
     """
     # Skip until after format chunk
-    read_after_format(file, out_file=out_file)
+    read_after_format(file, out_file=out_file, extra_size=extra_size+8)
 
     # Skip chunks until after data
     last_name = ""
@@ -119,7 +118,6 @@ def add_chunk(
 ) -> typing.Optional[bytes]:
     """
     Add new chunk after data (INFO by default).
-
     Optionally copy data to an output file.
     """
     if out_file:
@@ -129,7 +127,7 @@ def add_chunk(
         return_value = True
 
     # Skip until after data
-    read_after_data(wav_file, out_file=out_file)
+    read_after_data(wav_file, out_file=out_file, extra_size=len(chunk_data))
 
     # Add new chunk
     write_name(out_file, chunk_name)
@@ -154,8 +152,6 @@ def get_chunk(
 ) -> typing.Optional[bytes]:
     """
     Find a chunk and return data from it (default: INFO).
-
-
     Optionally copy data to an output file.
     Set keep_chunk = False to delete chunk.
     """
