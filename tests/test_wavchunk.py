@@ -11,7 +11,7 @@ import wavchunk
 class WavChunkTestCase(unittest.TestCase):
     """Test cases for wavchunk"""
 
-    def test_add_remove_chunk(self):
+    def test_add_remove_chunk(self) -> None:
         """Test adding and removing INFO chunk"""
         # Generate random WAV file with 100 samples
         audio_data = os.urandom(2 * 100)
@@ -40,6 +40,7 @@ class WavChunkTestCase(unittest.TestCase):
         # Verify chunk data
         with io.BytesIO(out_bytes) as chunked_file:
             actual_data = wavchunk.get_chunk(chunked_file)
+            assert actual_data is not None
             self.assertEqual(chunk_data, actual_data)
 
         # Verify RIFF size
@@ -47,7 +48,7 @@ class WavChunkTestCase(unittest.TestCase):
             size_with_chunk = wavchunk.read_size(size_file)
 
         # 8 for "data" and data size
-        assert size_with_chunk == original_size + len(actual_data) + 8
+        self.assertEqual(size_with_chunk, original_size + len(actual_data) + 8)
 
 
 # -----------------------------------------------------------------------------

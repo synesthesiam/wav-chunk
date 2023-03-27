@@ -4,13 +4,14 @@ import argparse
 import io
 import os
 import sys
+from typing import BinaryIO, Optional
 
 import wavchunk
 
 # -----------------------------------------------------------------------------
 
 
-def main():
+def main() -> None:
     """Main entry point"""
     args = get_args()
 
@@ -21,7 +22,7 @@ def main():
 # -----------------------------------------------------------------------------
 
 
-def do_add(args):
+def do_add(args: argparse.Namespace) -> None:
     """Add chunk to WAV file"""
     in_file = sys.stdin.buffer
     out_file = sys.stdout.buffer
@@ -38,6 +39,7 @@ def do_add(args):
                 print("Reading data from stdin...", file=sys.stderr)
         else:
             # Read data from a file
+            # pylint: disable=consider-using-with
             data_file = open(args.data, "rb")
     else:
         # Read data from argument
@@ -48,6 +50,7 @@ def do_add(args):
 
     if args.input:
         # Read WAV from file
+        # pylint: disable=consider-using-with
         in_file = open(args.input, "rb")
     else:
         # Read WAV from stdin
@@ -60,10 +63,10 @@ def do_add(args):
 # -----------------------------------------------------------------------------
 
 
-def do_get(args):
+def do_get(args: argparse.Namespace) -> None:
     """Get chunk from WAV file"""
     in_file = sys.stdin.buffer
-    out_file = sys.stdout.buffer
+    out_file: Optional[BinaryIO] = sys.stdout.buffer
     data_file = None
     keep_chunk = True
 
@@ -79,10 +82,12 @@ def do_get(args):
             out_file = None
     elif args.data:
         # Write data to file
+        # pylint: disable=consider-using-with
         data_file = open(args.data, "wb")
 
     if args.input:
         # Read WAV from stdin
+        # pylint: disable=consider-using-with
         in_file = open(args.input, "rb")
     else:
         # Read WAV from a file
@@ -91,6 +96,7 @@ def do_get(args):
 
     if args.output:
         # Write WAV to stdout
+        # pylint: disable=consider-using-with
         out_file = open(args.output, "wb")
 
     chunk_data = wavchunk.get_chunk(
