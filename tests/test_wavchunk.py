@@ -26,6 +26,9 @@ class WavChunkTestCase(unittest.TestCase):
 
             wav_bytes = wav_buffer.getvalue()
 
+        with io.BytesIO(wav_bytes[4:8]) as size_file:
+            original_size = wavchunk.read_size(size_file)
+
         # Random data for INFO
         chunk_data = os.urandom(50)
 
@@ -38,6 +41,13 @@ class WavChunkTestCase(unittest.TestCase):
         with io.BytesIO(out_bytes) as chunked_file:
             actual_data = wavchunk.get_chunk(chunked_file)
             self.assertEqual(chunk_data, actual_data)
+
+        # Verify RIFF size
+        with io.BytesIO(out_bytes[4:8]) as size_file:
+            size_with_chunk = wavchunk.read_size(size_file)
+
+        # 8 for "data" and data size
+        assert size_with_chunk == original_size + len(actual_data) + 8
 
 
 # -----------------------------------------------------------------------------

@@ -47,7 +47,9 @@ def write_size(file: typing.IO[bytes], size: int):
 
 
 def read_after_format(
-    file: typing.IO[bytes], out_file: typing.Optional[typing.IO[bytes]] = None, extra_size: int = 0
+    file: typing.IO[bytes],
+    out_file: typing.Optional[typing.IO[bytes]] = None,
+    extra_size: int = 0,
 ):
     """
     Read until file is right after data chunk.
@@ -85,14 +87,16 @@ def read_after_format(
 
 
 def read_after_data(
-    file: typing.IO[bytes], out_file: typing.Optional[typing.IO[bytes]] = None, extra_size: int = 0
+    file: typing.IO[bytes],
+    out_file: typing.Optional[typing.IO[bytes]] = None,
+    extra_size: int = 0,
 ):
     """
     Read until file is right after data chunk.
     Optionally copy data to an output file.
     """
     # Skip until after format chunk
-    read_after_format(file, out_file=out_file, extra_size=extra_size+8)
+    read_after_format(file, out_file=out_file, extra_size=extra_size + 8)
 
     # Skip chunks until after data
     last_name = ""
